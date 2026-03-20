@@ -21,8 +21,9 @@ nav{position:fixed;top:0;width:100%;z-index:100;padding:18px 5%;display:flex;jus
 .nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
 .nav-links a{color:var(--lgray);text-decoration:none;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;transition:color .3s;}
 .nav-links a:hover{color:var(--accent);}
-.admin-btn{padding:7px 16px;border:1px solid rgba(91,179,255,.35);border-radius:4px;color:var(--accent);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:transparent;transition:all .3s;}
+.admin-btn{display:none;padding:7px 16px;border:1px solid rgba(91,179,255,.35);border-radius:4px;color:var(--accent);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:transparent;transition:all .3s;}
 .admin-btn:hover{background:rgba(91,179,255,.1);}
+.admin-btn.visible{display:block;}
 
 /* HERO */
 #hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:0 5%;}
@@ -168,7 +169,7 @@ footer{padding:2rem 5%;text-align:center;border-top:1px solid rgba(26,111,196,.1
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">J.<span>A</span></div>
+  <div class="nav-logo" id="nav-logo" onclick="handleLogoClick()">J.<span>A</span></div>
   <ul class="nav-links">
     <li><a href="#about">À propos</a></li>
     <li><a href="#skills">Compétences</a></li>
@@ -721,10 +722,25 @@ function addAssoc(){
   setTimeout(()=>document.getElementById('assoc-form-'+(a.length-1)).classList.add('open'),50);
 }
 
-// ── UTILS ──
+// ── SECRET ADMIN ACCESS (triple click on logo) ──
+let logoClicks = 0, logoTimer;
+function handleLogoClick() {
+  logoClicks++;
+  clearTimeout(logoTimer);
+  logoTimer = setTimeout(() => logoClicks = 0, 800);
+  if (logoClicks >= 3) {
+    logoClicks = 0;
+    const pwd = prompt('Mot de passe :');
+    if (pwd === 'johana2026') {
+      document.querySelector('.admin-btn').classList.add('visible');
+      toast('✓ Mode admin activé');
+    }
+  }
+}
 function v(id) { return document.getElementById(id).value; }
-function toast() {
+function toast(msg) {
   const t = document.getElementById('toast');
+  t.textContent = msg || '✓ Sauvegardé avec succès';
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
